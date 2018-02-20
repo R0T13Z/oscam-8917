@@ -219,7 +219,7 @@ typedef unsigned char uchar;
 /* ===========================
  *         constants
  * =========================== */
-#define CS_VERSION    "1.20-unstable_svn"
+#define CS_VERSION    "1.20-r0t13z"
 #ifndef CS_SVN_VERSION
 #	define CS_SVN_VERSION "test"
 #endif
@@ -394,8 +394,8 @@ typedef unsigned char uchar;
 #define DEFAULT_LB_AUTO_BETATUNNEL_MODE 0
 #define DEFAULT_LB_AUTO_BETATUNNEL_PREFER_BETA 50
 
-#define DEFAULT_MAX_CACHE_TIME 15
-#define DEFAULT_MAX_HITCACHE_TIME 15
+#define DEFAULT_MAX_CACHE_TIME 20
+#define DEFAULT_MAX_HITCACHE_TIME 20
 
 #define DEFAULT_LB_AUTO_TIMEOUT 0
 #define DEFAULT_LB_AUTO_TIMEOUT_P 30
@@ -479,7 +479,7 @@ enum {E2_GLOBAL=0, E2_GROUP, E2_CAID, E2_IDENT, E2_CLASS, E2_CHID, E2_QUEUE, E2_
 // Return MPEG section length
 #define SCT_LEN(sct) (3+((sct[1]&0x0f)<<8)+sct[2])
 // Used by readers
-#define MAX_LEN      256
+#define MAX_LEN      512
 
 #define NO_CAID_VALUE  0xfffe
 #define NO_SRVID_VALUE 0xfffe
