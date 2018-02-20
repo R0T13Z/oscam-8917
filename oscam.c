@@ -288,13 +288,14 @@ static void write_versionfile(bool use_stdout) {
 		localtime_r(&now, &st);
 
 		fprintf(fp, "Unix starttime: %ld\n", (long)now);
-		fprintf(fp, "Starttime:      %02d.%02d.%04d %02d:%02d:%02d\n",
-			st.tm_mday, st.tm_mon + 1, st.tm_year + 1900,
+		fprintf(fp, "Starttime:      %04d-%02d-%02d %02d:%02d:%02d\n",
+			st.tm_year + 1900, st.tm_mon + 1, st.tm_mday,
 			st.tm_hour, st.tm_min, st.tm_sec);
 	}
 
 	fprintf(fp, "Version:        oscam-%s-r%s\n", CS_VERSION, CS_SVN_VERSION);
-
+	fprintf(fp, "Compiler:       %s\n", CS_TARGET);
+	fprintf(fp, "ConfigDir:      %s\n", cs_confdir);
 	fprintf(fp, "\n");
 	write_conf(WEBIF, "Web interface support");
 	write_conf(TOUCH, "Touch interface support");
@@ -343,7 +344,8 @@ static void write_versionfile(bool use_stdout) {
 		write_readerconf(READER_VIACCESS, "Viaccess");
 		write_readerconf(READER_VIDEOGUARD, "NDS Videoguard");
 		write_readerconf(READER_DRE, "DRE Crypt");
-		write_readerconf(READER_TONGFANG, "TONGFANG");
+		write_readerconf(READER_TONGFANG, "Tongfang");
+		write_readerconf(READER_STREAMGURAD, "Streamgurad");
 		write_readerconf(READER_BULCRYPT, "Bulcrypt");
 		write_readerconf(READER_GRIFFIN, "Griffin");
 		write_readerconf(READER_DGCRYPT, "DGCrypt");
@@ -392,7 +394,8 @@ static void do_report_emm_support(void) {
 		report_emm_support(READER_VIACCESS, "Viaccess");
 		report_emm_support(READER_VIDEOGUARD, "NDS Videoguard");
 		report_emm_support(READER_DRE, "DRE Crypt");
-		report_emm_support(READER_TONGFANG, "TONGFANG");
+		report_emm_support(READER_TONGFANG, "Tongfang");
+		report_emm_support(READER_STREAMGURAD, "Streamgurad");
 		report_emm_support(READER_BULCRYPT, "Bulcrypt");
 		report_emm_support(READER_GRIFFIN, "Griffin");
 		report_emm_support(READER_DGCRYPT, "DGCrypt");
@@ -1118,6 +1121,9 @@ int32_t main (int32_t argc, char *argv[])
 #endif
 #ifdef READER_TONGFANG
 	reader_tongfang,
+#endif
+#ifdef READER_STREAMGURAD
+	reader_streamguard,
 #endif
 #ifdef READER_BULCRYPT
 	reader_bulcrypt,

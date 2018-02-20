@@ -902,6 +902,7 @@ int32_t get_UA_ofs(uint16_t caid) {
 	case 0x0D: //CRYPTOWORKS:
 		ofs = 1;
 		break;
+	case 0x4A: //STREAMGURAD:
 	case 0x4B: //TONGFANG:
 	case 0x09: //VIDEOGUARD:
 	case 0x0B: //CONAX:
@@ -3703,7 +3704,7 @@ void cc_update_nodeid(void)
 	}
 
 	// Partner ID:
-	cc_node_id[4] = 0x10; // (Oscam 0x10, vPlugServer 0x11, Hadu 0x12,...)
+	cc_node_id[4] = 0xF0; // (Oscam 0x10, vPlugServer 0x11, Hadu 0x12,...)
 	sum += cc_node_id[4];
 
 	// generate checksum for Partner ID:
