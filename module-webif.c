@@ -1898,7 +1898,7 @@ static char *send_oscam_reader_stats(struct templatevars *vars, struct uriparams
 					tpl_printf(vars, TPLADD, "COUNT", "%d", s->ecm_count);
 
 					if(s->last_received) {
-						tpl_printf(vars, TPLADD, "LAST", "%02d.%02d.%02d %02d:%02d:%02d", lt.tm_mday, lt.tm_mon+1, lt.tm_year%100, lt.tm_hour, lt.tm_min, lt.tm_sec);
+						tpl_printf(vars, TPLADD, "LAST", "%02d-%02d-%02d %02d:%02d:%02d", lt.tm_year%100, lt.tm_mon+1, lt.tm_mday, lt.tm_hour, lt.tm_min, lt.tm_sec);
 
 					} else {
 						tpl_addVar(vars, TPLADD, "LAST","never");
@@ -2699,7 +2699,9 @@ static char *get_cardsystem_desc_by_caid(uint16_t caid) {
 	if (caid >= 0x0D00 && caid <= 0x0DFF) return "cryptoworks";
 	if (caid >= 0x1700 && caid <= 0x17FF) return "betacrypt";
 	if (caid >= 0x1800 && caid <= 0x18FF) return "nagra";
-	if (caid >= 0x4B00 && caid <= 0x4BFF) return "tongfang";
+	if (caid == 0x2600) return "constcw";
+	if (caid == 0x4A02) return "tongfang";
+	if (caid == 0x4AD2) return "streamguard";
 	if (caid >= 0x4AE0 && caid <= 0x4AE1) return "drecrypt";
 	if (caid == 0x5581 || caid == 0x4AEE) return "bulcrypt";
 	if (caid == 0x5501 || caid == 0x5504 || caid == 0x5511) return "griffin";
@@ -3238,13 +3240,13 @@ static char *send_oscam_status(struct templatevars *vars, struct uriparams *para
 
 				if(!apicall) {
 					if(cl->typ == 'c' && !cfg.http_readonly) {
-						tpl_printf(vars, TPLADD, "CSIDX", "<A HREF=\"status.html?action=kill&threadid=%p\" TITLE=\"Kill this client\"><IMG CLASS=\"icon\" SRC=\"image?i=ICKIL\" ALT=\"Kill\"></A>", cl);
+						tpl_printf(vars, TPLADD, "CSIDX", "<A HREF=\"user_edit.html?user=%s\" TITLE=\"Edit this client\"><IMG CLASS=\"icon\" SRC=\"image?i=ICEDI\" ALT=\"Edit\"></A>&nbsp;<A HREF=\"status.html?action=kill&threadid=%p\" TITLE=\"Kill this client\"><IMG CLASS=\"icon\" SRC=\"image?i=ICKIL\" ALT=\"Kill\"></A>", urlencode(vars, cl->account->usr), cl);
 					}
 					else if(((cl->typ == 'p' || cl->typ == 'r')) && !cfg.http_readonly) {
-						tpl_printf(vars, TPLADD, "CSIDX", "<A HREF=\"status.html?action=restart&amp;label=%s\" TITLE=\"Restart this reader/ proxy\"><IMG CLASS=\"icon\" SRC=\"image?i=ICRES\" ALT=\"Restart\"></A>", urlencode(vars, cl->reader->label));
+						tpl_printf(vars, TPLADD, "CSIDX", "<A HREF=\"readerconfig.html?label=%s\" TITLE=\"Edit this reader\"><IMG CLASS=\"icon\" SRC=\"image?i=ICEDI\" ALT=\"Edit\"></A>&nbsp;<A HREF=\"status.html?action=restart&amp;label=%s\" TITLE=\"Restart this reader/ proxy\"><IMG CLASS=\"icon\" SRC=\"image?i=ICRES\" ALT=\"Restart\"></A>", urlencode(vars, cl->reader->label), urlencode(vars, cl->reader->label));
 					}
 					else {
-						tpl_printf(vars, TPLADD, "CSIDX", "%p&nbsp;", cl);
+						tpl_printf(vars, TPLADD, "CSIDX", "%p", cl);
 					}
 				} else {
 					tpl_printf(vars, TPLADD, "CSIDX", "%p", cl);
@@ -3299,7 +3301,7 @@ static char *send_oscam_status(struct templatevars *vars, struct uriparams *para
 
 				if (!apicall) {
 					if((cl->typ != 'p' && cl->typ != 'r') || cl->reader->card_status == CARD_INSERTED){
-						tpl_printf(vars, TPLADD, "CLIENTLOGINDATE", "%02d.%02d.%02d  %02d:%02d:%02d", lt.tm_mday, lt.tm_mon+1, lt.tm_year%100, lt.tm_hour, lt.tm_min, lt.tm_sec);
+						tpl_printf(vars, TPLADD, "CLIENTLOGINDATE", "%02d-%02d-%02d %02d:%02d:%02d", lt.tm_year%100, lt.tm_mon+1, lt.tm_mday, lt.tm_hour, lt.tm_min, lt.tm_sec);
 						tpl_addVar(vars, TPLADD, "CLIENTLOGINSECS", sec2timeformat(vars, lsec));
 					} else {
 						tpl_addVar(vars, TPLADD, "CLIENTLOGINDATE", "");
@@ -3414,7 +3416,7 @@ static char *send_oscam_status(struct templatevars *vars, struct uriparams *para
 									if (active_ent) tpl_addVar(vars, TPLAPPEND, "TMPSPAN", "<BR><BR>");
 									active_ent++;
 									localtime_r(&ent->end, &end_t);
-									tpl_printf(vars, TPLAPPEND, "TMPSPAN", "%04X:%06X<BR>exp:%04d/%02d/%02d",
+									tpl_printf(vars, TPLAPPEND, "TMPSPAN", "%04X:%06X<BR>exp:%04d-%02d-%02d",
 									    ent->caid, ent->provid,
 									    end_t.tm_year + 1900, end_t.tm_mon + 1, end_t.tm_mday);
 								}
@@ -4167,9 +4169,9 @@ static char *send_oscam_failban(struct templatevars *vars, struct uriparams *par
 		struct tm st ;
 		localtime_r(&v_ban_entry->v_time, &st);
 		if (!apicall) {
-			tpl_printf(vars, TPLADD, "VIOLATIONDATE", "%02d.%02d.%02d %02d:%02d:%02d",
-					st.tm_mday, st.tm_mon+1,
-					st.tm_year%100, st.tm_hour,
+			tpl_printf(vars, TPLADD, "VIOLATIONDATE", "%02d-%02d-%02d %02d:%02d:%02d",
+					st.tm_year%100, st.tm_mon+1,
+					st.tm_mday, st.tm_hour,
 					st.tm_min, st.tm_sec);
 		} else {
 			char tbuffer [30];
@@ -5238,6 +5240,7 @@ static int32_t process_request(FILE *f, IN_ADDR_T in) {
 						cs_debug_mask(D_CLIENT, "WebIf: Received wrong auth header from %s:", cs_inet_ntoa(addr));
 						cs_debug_mask(D_CLIENT, "%s", authheader);
 					} else
+						cs_log("OSCAM WebIf received no auth header from %s", cs_inet_ntoa(addr));
 						cs_debug_mask(D_CLIENT, "WebIf: Received no auth header from %s.", cs_inet_ntoa(addr));
 				}
 				calculate_nonce(NULL, expectednonce, opaque);
@@ -5289,10 +5292,10 @@ static int32_t process_request(FILE *f, IN_ADDR_T in) {
 				tpl_addVar(vars, TPLADD, "REFRESH", tpl_getTpl(vars, "REFRESH"));
 			}
 
-			tpl_printf(vars, TPLADD, "CURDATE", "%02d.%02d.%02d", lt.tm_mday, lt.tm_mon+1, lt.tm_year%100);
+			tpl_printf(vars, TPLADD, "CURDATE", "%04d-%02d-%02d", lt.tm_year+1900, lt.tm_mon+1, lt.tm_mday);
 			tpl_printf(vars, TPLADD, "CURTIME", "%02d:%02d:%02d", lt.tm_hour, lt.tm_min, lt.tm_sec);
 			localtime_r(&first_client->login, &st);
-			tpl_printf(vars, TPLADD, "STARTDATE", "%02d.%02d.%02d", st.tm_mday, st.tm_mon+1, st.tm_year%100);
+			tpl_printf(vars, TPLADD, "STARTDATE", "%04d-%02d-%02d", st.tm_year+1900, st.tm_mon+1, st.tm_mday);
 			tpl_printf(vars, TPLADD, "STARTTIME", "%02d:%02d:%02d", st.tm_hour, st.tm_min, st.tm_sec);
 			tpl_printf(vars, TPLADD, "PROCESSID", "%d", getpid());
 
