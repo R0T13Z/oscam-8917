@@ -785,7 +785,7 @@ int32_t dvbapi_start_emm_filter(int32_t demux_index) {
 		//demux[demux_index].emm_filter=1;
 		cs_debug_mask(D_DVBAPI,"[EMM Filter] %i matching emm filter skipped because they are already active on same emmpid:provid", fcount_added);
 	}
-	if (fcount == abs(demux[demux_index].emm_filter)) return 0;
+	if (fcount == (unsigned int)abs(demux[demux_index].emm_filter)) return 0;
 	else return 1;
 }
 
