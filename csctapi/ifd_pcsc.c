@@ -11,12 +11,12 @@
     #include <specstrings.h>
     #include <WinSCard.h>
   #else
-    #include <PCSC/pcsclite.h>
-    #include <PCSC/winscard.h>
+    #include <pcsclite.h>
+    #include <winscard.h>
     #if defined(__APPLE__)
-       #include <PCSC/wintypes.h>
+       #include <wintypes.h>
     #else
-       #include <PCSC/reader.h>
+       #include <reader.h>
     #endif
   #endif
 
