@@ -5,7 +5,7 @@
 //#define TOUCH 1
 //#define WITH_SSL 1
 #if defined(__linux__)
-#define HAVE_DVBAPI 1
+//#define HAVE_DVBAPI 1
 #endif
 //#define IRDETO_GUESSING 1
 //#define CS_ANTICASC 1
@@ -50,10 +50,10 @@
 #define READER_DGCRYPT 1
 
 //#define CARDREADER_PHOENIX 1
-#define CARDREADER_INTERNAL 1
+//#define CARDREADER_INTERNAL 1
 //#define CARDREADER_MP35 1
 //#define CARDREADER_SC8IN1 1
-//#define CARDREADER_SMARGO 1
+#define CARDREADER_SMARGO 1
 //#define CARDREADER_DB2COM 1
 
 #ifdef WITH_PCSC
